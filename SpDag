@@ -1,0 +1,31 @@
+from airflow import DAG
+from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
+from datetime import datetime
+
+default_args = {
+        "owner": "airflow",
+        "start_date": datetime(2025, 1, 1),
+        "retries": 0,
+    }
+
+with DAG(
+        dag_id="spark_test_dag",
+        default_args=default_args,
+        schedule=None,
+        catchup=False,
+        description="Run a Spark job inside containerized Spark cluster",
+    ) as dag:
+
+    run_spark_job = SparkSubmitOperator(
+            task_id="run_spark_job",
+            application="/opt/spark_scripts/spark_job.py",
+            conn_id="spark_default",
+            verbose=True,
+            name="airflow_spark_job",
+            conf={
+                "spark.executor.memory": "512m",
+                "spark.driver.memory": "512m"
+            },
+        )
+
+    run_spark_job
