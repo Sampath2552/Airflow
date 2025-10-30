@@ -1,0 +1,55 @@
+# from pyspark.sql import SparkSession
+# from pyspark.sql.functions import upper
+# from datetime import datetime
+
+# if __name__ == "__main__":
+#     # Initialize Spark session
+#     spark = SparkSession.builder.appName("AirflowSparkDemo").getOrCreate()
+
+#     # Create simple DataFrame
+#     data = [(1, "Alice"), (2, "Bob"), (3, "Charlie")]
+#     df = spark.createDataFrame(data, ["id", "name"])
+
+#     print("==== Original Data ====")
+#     df.show()
+
+#     # Apply transformation
+#     df_upper = df.withColumn("name_upper", upper(df["name"]))
+
+#     print("==== Transformed Data ====")
+#     df_upper.show()
+
+#     # Write output (make sure this path is mounted/shared)
+#     output_path = f"/opt/spark_scripts/output/output_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+#     df_upper.write.mode("overwrite").json(output_path)
+
+#     print(f"✅ Output written to {output_path}")
+
+#     # Stop Spark
+#     spark.stop()
+
+from pyspark.sql import SparkSession
+
+if __name__ == "__main__":
+    # Create Spark session
+    spark = SparkSession.builder.appName("SimpleSparkTest").getOrCreate()
+
+    print("✅ Spark session created successfully!")
+
+    # Create a small DataFrame in memory
+    data = [("Alice", 25), ("Bob", 30), ("Charlie", 35)]
+    df = spark.createDataFrame(data, ["name", "age"])
+
+    print("==== Original Data ====")
+    df.show()
+
+    # Perform a simple transformation
+    df_filtered = df.filter(df.age > 28)
+
+    print("==== Filtered Data (age > 28) ====")
+    df_filtered.show()
+
+    print("✅ Spark job completed successfully!")
+
+    spark.stop()
+    print("✅ Spark session stopped.")
